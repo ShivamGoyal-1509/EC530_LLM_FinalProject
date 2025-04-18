@@ -78,4 +78,4 @@ pandas
 
 ## License
 
-This project is made by SHIVAM GOYAL (BUID:U35920740) with the help of ChatGPT
+This project is made by SHIVAM GOYAL (BUID: U35920740) with the help of ChatGPT
