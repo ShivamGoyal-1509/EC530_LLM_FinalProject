@@ -33,13 +33,13 @@ This Streamlit web application allows teachers to upload student assignments or 
 ## Project Structure
 
 document-analyzer/
-├── app.py                     # Main Streamlit app
-├── openai_utils.py            # Teaching material and grading logic using OpenAI
-├── grading_utils.py           # PDF text extraction
-├── database.py                # SQLite database operations
-├── students.db                # Generated SQLite database (created at runtime)
-├── .env                       # API key (not checked into version control)
-├── requirements.txt           # List of dependencies
+  ├── app.py                     # Main Streamlit app
+  ├── openai_utils.py            # Teaching material and grading logic using OpenAI
+  ├── grading_utils.py           # PDF text extraction
+  ├── database.py                # SQLite database operations
+  ├── students.db                # Generated SQLite database (created at runtime)
+  ├── .env                       # API key (not checked into version control)
+  ├── requirements.txt           # List of dependencies
 
 ## Setup Instructions
 
