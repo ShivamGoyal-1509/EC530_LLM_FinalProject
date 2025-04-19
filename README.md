@@ -10,6 +10,7 @@ This Streamlit web application allows teachers to upload student assignments or 
 - Automatically grade assignments and provide constructive feedback.
 - Save teacher name, email, student name, grade, marks, and remarks into a SQLite database.
 - View all past submissions via a button in the sidebar.
+- Email validation for @gmail.com and @bu.edu domains.
 
 ### Admin Mode
 - Secure admin login with predefined credentials:
@@ -79,11 +80,38 @@ streamlit run app.py
 
 ## Continuous Integration with GitHub Actions
 
-This project uses GitHub Actions for automated testing and code quality checks. The workflow:
+This project uses GitHub Actions for automated testing and code quality assurance. The workflow is defined in `.github/workflows/streamlit-app-test.yml` and consists of three main jobs:
 
-1. **Linting**: Checks code quality and applies formatting with flake8 and black
-2. **Unit Testing**: Runs all tests in the `tests/` directory using pytest
-3. **Streamlit Testing**: Performs basic smoke tests on the Streamlit app
+### 1. Linting (Code Quality Check)
+- **Tools Used**: flake8 and black
+- **Functions**:
+  - flake8 checks code for syntax errors and undefined names
+  - black formats the code to follow a consistent style
+
+### 2. Unit Testing
+- **Tools Used**: pytest with pytest-mock
+- **Tests**:
+  - **Database Tests**: Verifies that all database operations work correctly (connect, create, insert, retrieve)
+  - **OpenAI Utility Tests**: Tests teaching material generation and grading with mocked API responses
+  - **Email Validation Tests**: Ensures the email validation function correctly accepts or rejects email addresses
+
+### 3. Streamlit Integration
+- Verifies that the Streamlit application files can be properly loaded
+- Ensures all dependencies are correctly installed
+
+### When Tests Run
+The GitHub Actions workflow runs automatically on:
+- Every push to the main branch
+- Every pull request targeting the main branch
+- Manual triggers from the GitHub Actions tab
+
+### How the Testing Works
+- **Mocking**: The tests use Python's unittest.mock to simulate external dependencies
+  - SQLite database connections are mocked to avoid real database operations
+  - OpenAI API calls are mocked to avoid real API usage and costs
+  - Streamlit's session state is mocked to avoid initialization issues
+
+- **Test Isolation**: Each test focuses on a specific function or feature, ensuring changes don't break existing functionality
 
 ### Running Tests Locally
 
@@ -102,18 +130,6 @@ pytest -v
 # Run specific test class
 pytest tests/test_app.py::TestDatabase
 ```
-
-### GitHub Actions Workflow
-
-The workflow runs automatically on:
-- Every push to the main branch
-- Every pull request to the main branch
-- Manual triggers from the GitHub Actions tab
-
-To view workflow results:
-1. Go to the GitHub repository
-2. Click on the "Actions" tab
-3. Select a workflow run to see details and logs
 
 ## Requirements
 
