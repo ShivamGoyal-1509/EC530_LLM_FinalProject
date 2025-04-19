@@ -7,12 +7,28 @@ from dotenv import load_dotenv  # For loading environment variables
 # This helps keep API keys and secrets out of source code
 load_dotenv()
 
-# Initialize OpenAI client with API key from environment variables
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize OpenAI client with API key - with error handling
+api_key = os.getenv("OPENAI_API_KEY")
+if api_key:
+    client = OpenAI(api_key=api_key)
+else:
+    # For testing purposes, create a mock
+    import unittest.mock
+    client = unittest.mock.MagicMock()
+    print("Warning: No OpenAI API key found. Using mock client.")
 
 # Function to extract all text content from a PDF file
 # Takes a file path and returns the full text as a string
 def extract_text_from_pdf(file_path):
+    """
+    Extract text from a PDF document
+    
+    Args:
+        file_path (str): Path to the PDF file
+        
+    Returns:
+        str: Extracted text content from all pages
+    """
     # Open the PDF document
     doc = fitz.open(file_path)
     
@@ -29,6 +45,15 @@ def extract_text_from_pdf(file_path):
 # Function to grade an assignment using OpenAI's GPT model
 # Takes assignment text and returns grade, marks, and feedback
 def grade_assignment(text):
+    """
+    Grade an assignment using AI
+    
+    Args:
+        text (str): The assignment text to grade
+        
+    Returns:
+        tuple: (grade, marks, remarks) containing the assessment
+    """
     # Construct a detailed prompt for the AI to evaluate the assignment
     prompt = f"""
 You are a strict but fair high school teacher evaluating a student's assignment.
