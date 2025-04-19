@@ -1,4 +1,19 @@
-streamlit
-openai>=1.0.0
-PyMuPDF
-python-dotenv
+# Core dependencies
+streamlit==1.32.0
+pandas==2.2.0
+sqlite3-api==1.0.3
+
+# PDF processing
+PyMuPDF==1.23.22   # fitz library for PDF processing
+
+# OpenAI integration
+openai==1.14.0
+python-dotenv==1.0.1
+
+# Testing dependencies
+pytest==7.4.3
+pytest-mock==3.12.0
+
+# Linting and formatting
+flake8==7.0.0
+black==24.1.1
