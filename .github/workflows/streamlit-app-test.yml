@@ -1,0 +1,110 @@
+# .github/workflows/streamlit-app-test.yml
+
+# Workflow name that appears in GitHub Actions tab
+name: Streamlit App Test
+
+# Define when this workflow will run
+on:
+  # Run on push events to these branches
+  push:
+    branches: ["main"]
+  # Run on pull requests to these branches
+  pull_request:
+    branches: ["main"]
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+# Define permissions
+permissions:
+  contents: read
+
+# Jobs to run
+jobs:
+  # Linting job - checks code quality
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Run flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      
+      - name: Check formatting with Black
+        run: |
+          black --check .
+
+  # Unit testing job
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      # Create a mock .env file for testing
+      - name: Create mock environment
+        run: |
+          echo "OPENAI_API_KEY=mock-key-for-testing" > .env
+      
+      # Run pytest with simple tests
+      - name: Run pytest
+        run: |
+          pytest -v
+  
+  # Streamlit smoke test
+  streamlit-test:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install streamlit pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      # Create mock .env file for testing
+      - name: Create mock environment
+        run: |
+          echo "OPENAI_API_KEY=mock-key-for-testing" > .env
+      
+      # Use Streamlit's built-in testing action
+      - name: Run Streamlit App Action
+        uses: streamlit/streamlit-app-action@v0.0.3
+        with:
+          app-path: app.py
+          # Skip actual app execution since we need real OpenAI key
+          skip-smoke: true
